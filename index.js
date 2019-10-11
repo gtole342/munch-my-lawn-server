@@ -11,18 +11,61 @@ const http = require('http')
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
-let nspObj = {}
 
 app.use(cors())
-io.set('origins', 'http://localhost:3000')
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ limit: '10mb' }))
+
+
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  let handshakeData = socket.request;
+  let room = handshakeData._query['room']
+  socket.join(room)
+  socket.on('end', () => {
+    socket.disconnect();
+    socket.leave(room);
+
+    console.log('a user disconnected');
+
+  })
+  socket.on('add message', (message, sender, recipient) => {
+    socket.emit('add message', message);
+    const chatId = `${sender}-${recipient}`;
+    db.Message.create({
+      message, 
+      sender, 
+      recipient,
+      chatId
+    })
+    console.log('db entry made!')
+  })
+  socket.on('is typing', (userId) => {
+    console.log(userId)
+    socket.broadcast.emit('is typing', userId)
+  })
+  socket.on('disconnect', () => {
+    socket.disconnect();
+    socket.leave(room);
+    
+    console.log('a user disconnected');
+  })
+});
+
+
+
+
+
+
+
+
+
 
 app.post('/chat', (req,res) => {
   let goatId = req.body.recipient;
   let userId = req.body.user;
   res.send('hey there big face')
-  const chatId = `${userId}-${goatId}`
   db.User.updateOne(
     {_id: userId},
     {$push: { chats: chatId }}
@@ -51,16 +94,6 @@ app.post('/chat', (req,res) => {
             .catch(err => {
               console.log(err)
             })
-          })
-          socket.on('is typing', (userId) => {
-            console.log(userId)
-            socket.broadcast.emit('is typing', userId)
-          })
-    
-          socket.on('disconnect', () => {
-           socket.removeAllListeners(nspObj[chatId]);
-            nspObj = {}
-            console.log('user disconnected');
           })
       })
     })
