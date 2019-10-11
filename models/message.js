@@ -12,7 +12,7 @@ let messageSchema = new mongoose.Schema({
     date: {
         type: String,
     },
-    reciever: {
+    recipient: {
         type: Object_Id,
         ref: 'User',
     },

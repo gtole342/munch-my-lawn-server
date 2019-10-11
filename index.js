@@ -11,7 +11,7 @@ const http = require('http')
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
-const nspObj = {}
+let nspObj = {}
 
 app.use(cors())
 io.set('origins', 'http://localhost:3000')
@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ limit: '10mb' }))
 
 app.post('/chat', (req,res) => {
-  goatId = req.body.goatId;
-  userId = req.body.userId;
+  let goatId = req.body.recipient;
+  let userId = req.body.user;
   res.send('hey there big face')
   const chatId = `${userId}-${goatId}`
   db.User.updateOne(
@@ -36,13 +36,13 @@ app.post('/chat', (req,res) => {
       nspObj[chatId] = io.of(`/${userId}-${goatId}`)
       nspObj[chatId].on('connection', socket => {
           console.log('New client connected');
-          socket.on('add message', (message, user, recipient) => {
-            console.log('The Message added is: ', message, 'The user is:', user, 'The goat is:', recipient);
+          socket.on('add message', (message, sender, recipient) => {
+            //console.log('The Message added is: ', message, 'The user is:', user, 'The goat is:', recipient);
             nspObj[`${userId}-${goatId}`].emit('add message', message)
             db.Message.create({
               message, 
-              goatId, 
-              userId,
+              sender, 
+              recipient,
               chatId
             })
             .then(() => {
@@ -97,6 +97,7 @@ app.use('/appointment',
     secret: process.env.JWT_SECRET
   }), require('./controllers/appointment'))
 app.use('/user', require('./controllers/user'))
+app.use('/chatlist', require('./controllers/chatlist'))
 app.get('*', (req,res) => {
   res.status(404).send({
     message: 'Not Found'
