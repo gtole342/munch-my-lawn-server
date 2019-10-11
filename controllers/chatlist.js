@@ -2,7 +2,7 @@ const router = require('express').Router();
 const db = require('../models')
 
 router.get('/', (req, res) => {
-    db.Message.findOne({
+    db.Message.find({
         sender: req.body.userId
     })
     .then(message => {

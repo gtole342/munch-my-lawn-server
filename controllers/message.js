@@ -3,8 +3,8 @@ const db = require('../models')
 
 router.get('/', (req, res) => {
    db.Message.find({
-       userId: req.body.userId,
-       goatId: req.body.goatId
+       sender: req.body.currentUser,
+       recipient: req.body.recipient
    })
    .then(response => {
        res.send(response)

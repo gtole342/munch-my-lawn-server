@@ -58,6 +58,8 @@ app.post('/chat', (req,res) => {
           })
     
           socket.on('disconnect', () => {
+            socket.disconnect();
+            nspObj = {}
             console.log('user disconnected');
           })
       })
