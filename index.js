@@ -58,7 +58,7 @@ app.post('/chat', (req,res) => {
           })
     
           socket.on('disconnect', () => {
-            socket.disconnect();
+           socket.removeAllListeners(nspObj[chatId]);
             nspObj = {}
             console.log('user disconnected');
           })
