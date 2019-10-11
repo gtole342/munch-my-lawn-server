@@ -33,73 +33,38 @@ io.on('connection', function(socket){
   socket.on('add message', (message, sender, recipient) => {
     socket.emit('add message', message);
     const chatId = `${sender}-${recipient}`;
-    db.Message.create({
-      message, 
-      sender, 
-      recipient,
-      chatId
-    })
-    console.log('db entry made!')
-  })
-  socket.on('is typing', (userId) => {
-    console.log(userId)
-    socket.broadcast.emit('is typing', userId)
-  })
-  socket.on('disconnect', () => {
-    socket.disconnect();
-    socket.leave(room);
-    
-    console.log('a user disconnected');
-  })
-});
-
-
-
-
-
-
-
-
-
-
-app.post('/chat', (req,res) => {
-  let goatId = req.body.recipient;
-  let userId = req.body.user;
-  res.send('hey there big face')
-  db.User.updateOne(
-    {_id: userId},
-    {$push: { chats: chatId }}
-  )
-  .then(()=>{
+    console.log('update sender')
     db.User.updateOne(
-      {_id: goatId},
+      {_id: sender},
       {$push: { chats: chatId }}
     )
     .then(()=>{
-      nspObj[chatId] = io.of(`/${userId}-${goatId}`)
-      nspObj[chatId].on('connection', socket => {
-          console.log('New client connected');
-          socket.on('add message', (message, sender, recipient) => {
-            //console.log('The Message added is: ', message, 'The user is:', user, 'The goat is:', recipient);
-            nspObj[`${userId}-${goatId}`].emit('add message', message)
-            db.Message.create({
-              message, 
-              sender, 
-              recipient,
-              chatId
-            })
-            .then(() => {
-              console.log('message created in db')
-            })
-            .catch(err => {
-              console.log(err)
-            })
-          })
+      console.log('updated recipient')
+      db.User.updateOne(
+        {_id: recipient},
+        {$push: { chats: chatId }}
+      ).then(()=> {
+        db.Message.create({
+          message, 
+          sender, 
+          recipient,
+          chatId
+        })
+        console.log('db entry made!')
       })
     })
+    socket.on('is typing', (userId) => {
+      console.log(userId)
+      socket.broadcast.emit('is typing', userId)
+    })
+    socket.on('disconnect', () => {
+      socket.disconnect();
+      socket.leave(room);
+      
+      console.log('a user disconnected');
+    })
   })
-})
-
+});
 
 app.post('/sms', (req, res) => {
   const twiml = new MessagingResponse();
