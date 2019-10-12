@@ -10,7 +10,7 @@ const getRandomCoord = (start, end) => {
 const goatSeed = (goatNames) => {
   goatPics = ['https://imgur.com/2Llb5Rr.jpg', 
               'https://imgur.com/V5fBKSL.jpg',
-              'https://imgur.com/znAaM3I/jpg',
+              'https://imgur.com/znAaM3I.jpg',
               'https://imgur.com/Lly2mLa.jpg',
               'https://imgur.com/o7bj6wI.jpg',
               'https://imgur.com/h728IV8.jpg',

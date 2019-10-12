@@ -42,6 +42,7 @@ let userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Goat'
   },
+  rating: Number,
   reviews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Review'
