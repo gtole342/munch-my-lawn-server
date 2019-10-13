@@ -85,13 +85,15 @@ app.use('/auth',
 
 app.use('/message', require('./controllers/message'));
 app.use('/reviews', 
-  expressJwt({
-  secret: process.env.JWT_SECRET
-}), require('./controllers/reviews'))
+//   expressJwt({
+//   secret: process.env.JWT_SECRET
+// }), 
+require('./controllers/reviews'))
 app.use('/appointment',
-  expressJwt({
-    secret: process.env.JWT_SECRET
-  }), require('./controllers/appointment'))
+  // expressJwt({
+  //   secret: process.env.JWT_SECRET
+  // }), 
+  require('./controllers/appointment'))
 app.use('/user', require('./controllers/user'))
 app.use('/chatlist', require('./controllers/chatlist'))
 app.use('/goat', require('./controllers/goat'))
