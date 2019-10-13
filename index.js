@@ -94,6 +94,7 @@ app.use('/appointment',
   }), require('./controllers/appointment'))
 app.use('/user', require('./controllers/user'))
 app.use('/chatlist', require('./controllers/chatlist'))
+app.use('/goat', require('./controllers/goat'))
 app.get('*', (req,res) => {
   res.status(404).send({
     message: 'Not Found'
