@@ -1,13 +1,15 @@
 const router = require('express').Router();
 const db = require('../models')
 
-router.get('/', (req, res) => {
+router.get('/:senderId/:recipientId', (req, res) => {
+    console.log(req.body);
    db.Message.find({
-       userId: req.body.userId,
-       goatId: req.body.goatId
+       sender: req.params.senderId,
+       recipient: req.params.recipientId
    })
-   .then(response => {
-       res.send(response)
+   .then(messages => {
+       console.log(messages);
+       res.send(messages)
    })
    .catch(err => {
        console.log(err)

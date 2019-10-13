@@ -17,7 +17,7 @@ router.get('/goats', (req,res) => {
 // GET  profile
 router.get('/:userId', (req,res) => {
   db.User.findOne({
-    _id: req.params.id
+    _id: req.params.userId
   })
   .then((user) => {
     res.send({user})
