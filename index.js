@@ -24,7 +24,6 @@ io.on('connection', function(socket){
   socket.on('end', () => {
     socket.disconnect();
     socket.leave(room);
-
     console.log('a user disconnected');
 
   })
@@ -58,7 +57,6 @@ io.on('connection', function(socket){
     socket.on('disconnect', () => {
       socket.disconnect();
       socket.leave(room);
-      
       console.log('a user disconnected');
     })
   })
