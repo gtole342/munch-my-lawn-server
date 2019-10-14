@@ -17,13 +17,18 @@ router.get('/:senderId/:recipientId', (req, res) => {
 })
 
 router.get('/:userId', (req,res)=>{
-    db.User.findById(req.params.userId)
+    db.User.findOne({
+        _id: req.params.userId
+    })
     .then((user)=>{
+        console.log('This is my user doofus', user._id)
         const recipients = user.chats.map( async (chat)=>{
-            ids = chat.split('-')
+            let ids = chat.split('-');
+            console.log(ids)
             if (ids[0] === user._id) {
                 return await db.User.findById(ids[1])
                 .then((user) => {
+                    console.log('This is the selected user', user)
                     return {
                         id: user._id,
                         firstname: user.firstname,
@@ -47,6 +52,7 @@ router.get('/:userId', (req,res)=>{
                 return
             }
         })
+        console.log({recipients})
         res.send({recipients})
 
     })
