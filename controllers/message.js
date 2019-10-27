@@ -21,14 +21,15 @@ router.get('/:userId', (req,res)=>{
         _id: req.params.userId
     })
     .then((user)=>{
-        console.log('This is my user doofus', user._id)
+        //console.log('This is my user doofus', user._id)
         const recipients = user.chats.map( async (chat)=>{
             let ids = chat.split('-');
             console.log(ids)
             if (ids[0] === user._id) {
+                console.log('This is the selected user', user._id)
                 return await db.User.findById(ids[1])
                 .then((user) => {
-                    console.log('This is the selected user', user)
+                    
                     return {
                         id: user._id,
                         firstname: user.firstname,
@@ -38,8 +39,10 @@ router.get('/:userId', (req,res)=>{
                 })
             }
             else if (ids[1] === user._id){
+                console.log('this is the selected user', user._id)
                 return await db.User.findById(ids[0])
                 .then((user) => {
+                    
                     return {
                         id: user._id,
                         firstname: user.firstname,
@@ -49,6 +52,7 @@ router.get('/:userId', (req,res)=>{
                 })
             }
             else{
+                console.log('nothing fired!!!!! await function just returned without results')
                 return
             }
         })
