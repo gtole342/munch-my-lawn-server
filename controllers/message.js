@@ -21,13 +21,12 @@ router.get('/:userId', (req,res)=>{
         _id: req.params.userId
     })
     .then((user)=>{
-        const recipients = user.chats.map( async (chat)=>{
+        const getUserChats = async () => {
+            return Promise.all(user.chats.map( async (chat)=>{
             let ids = chat.split('-');
             if (ids[0] == user._id) {
-                console.log(ids[0])
                 return await db.User.findById(`${ids[1]}`)
-                .then((user) => {
-                    console.log('this is supposedly the user', user)
+                .then(async (user) => {
                     return {
                         id: user._id,
                         firstname: user.firstname,
@@ -37,10 +36,8 @@ router.get('/:userId', (req,res)=>{
                 })
             }
             else if (ids[1] == user._id){
-                //console.log('this is the selected user', user._id)
                 return await db.User.findById(`${ids[0]}`)
                 .then((user) => {
-                    
                     return {
                         id: user._id,
                         firstname: user.firstname,
@@ -54,8 +51,11 @@ router.get('/:userId', (req,res)=>{
                 return
             }
         })
-        console.log({recipients})
-        res.send({recipients})
+        )}
+        getUserChats().then(response => {
+            console.log(response);
+            res.send({response})
+        })
     })
 })
 
