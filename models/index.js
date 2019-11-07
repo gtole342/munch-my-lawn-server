@@ -12,7 +12,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 module.exports.Message = require('./message')
 module.exports.Goat = require('./goat')
-//module.exports.Goat = require('./goat')
 module.exports.Review = require('./reviews')
 module.exports.Appointment = require('./appointment')
 module.exports.User = require('./user')

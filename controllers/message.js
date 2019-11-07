@@ -55,6 +55,8 @@ router.get('/:userId', (req,res)=>{
         getUserChats().then(response => {
             console.log(response);
             res.send({response})
+        }).catch(err => {
+            console.log('GET USER CHATS WONT FIRE!!!', err)
         })
     })
 })
