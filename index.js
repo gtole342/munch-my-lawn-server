@@ -103,6 +103,6 @@ app.get('*', (req,res) => {
   })
 })
 
-server.listen(process.env.PORT, ()=>{
+server.listen(process.env.PORT || 3000, ()=>{
   rowdyResults.print()
 })
