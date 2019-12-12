@@ -20,6 +20,7 @@ const client = require('twilio')(accountSid, authToken);
 
 // POST appointment
 router.post('/create', (req,res) => {
+  console.log('this is my req.body', req.body)
   db.Appointment.findOne({
     goatId: req.body.goatId,
     startDate: req.body.startDate,
@@ -27,41 +28,40 @@ router.post('/create', (req,res) => {
   })
   .then((appointment)=>{
     if (appointment){
-      return res.status(409).send({
-        message: 'Preexisting appointment, please select another date.'
-      })
+      res.send('Thats been taken!')
     }
     db.Appointment.create(req.body)
     .then((newAppointment) => {
       //Send an email about the appointment
-      var mailOptions = {
-        from: 'munchmylawn@gmail.com',
-        to: req.user.email,
-        subject: 'Appointment Set',
-        text: `You have set an appointment for ${req.body.startDate}`
-      };
+      // var mailOptions = {
+      //   from: 'munchmylawn@gmail.com',
+      //   to: req.user.email,
+      //   subject: 'Appointment Set',
+      //   text: `You have set an appointment for ${req.body.startDate}`
+      // };
+      console.log(req.user)
 
-      transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
+    //   transporter.sendMail(mailOptions, function(error, info){
+    //     if (error) {
+    //       console.log(error);
+    //     } else {
+    //       console.log('Email sent: ' + info.response);
+    //     }
+    //   });
 
-      client.messages
-        .create({
-           body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
-           from: '+12054489339',
-           to: req.user.phone
-         })
-        .then(message => console.log(message.sid));
+    //   client.messages
+    //     .create({
+    //        body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+    //        from: '+12054489339',
+    //        to: req.user.phone
+    //      })
+    //     .then(message => console.log(message.sid));
 
-      res.send({
-        message: 'Appointment successfully created',
-        appointmentId: newAppointment._id
-      })
-    })
+    //   res.send({
+    //     message: 'Appointment successfully created',
+    //     appointmentId: newAppointment._id
+    //   })
+     })
     .catch((err) => {
       console.log('Error when creating new appointment', err)
       res.status(500).send({ message: 'Error creating appointment' })

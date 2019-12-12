@@ -47,7 +47,7 @@ io.on('connection', function(socket){
           recipient,
           chatId
         })
-        console.log('db entry made!')
+        console.log('db entry made!', )
       })
     })
     socket.on('is typing', (userId) => {
@@ -103,6 +103,6 @@ app.get('*', (req,res) => {
   })
 })
 
-server.listen(process.env.PORT, ()=>{
+server.listen(process.env.PORT || 3000, ()=>{
   rowdyResults.print()
 })

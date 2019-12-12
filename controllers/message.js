@@ -21,14 +21,12 @@ router.get('/:userId', (req,res)=>{
         _id: req.params.userId
     })
     .then((user)=>{
-        console.log('This is my user doofus', user._id)
-        const recipients = user.chats.map( async (chat)=>{
+        const getUserChats = async () => {
+            return Promise.all(user.chats.map( async (chat)=>{
             let ids = chat.split('-');
-            console.log(ids)
-            if (ids[0] === user._id) {
-                return await db.User.findById(ids[1])
-                .then((user) => {
-                    console.log('This is the selected user', user)
+            if (ids[0] == user._id) {
+                return await db.User.findById(`${ids[1]}`)
+                .then(async (user) => {
                     return {
                         id: user._id,
                         firstname: user.firstname,
@@ -37,8 +35,8 @@ router.get('/:userId', (req,res)=>{
                     }
                 })
             }
-            else if (ids[1] === user._id){
-                return await db.User.findById(ids[0])
+            else if (ids[1] == user._id){
+                return await db.User.findById(`${ids[0]}`)
                 .then((user) => {
                     return {
                         id: user._id,
@@ -49,12 +47,17 @@ router.get('/:userId', (req,res)=>{
                 })
             }
             else{
+                console.log('NOTHING FIRED!!!!! await function just returned without results')
                 return
             }
         })
-        console.log({recipients})
-        res.send({recipients})
-
+        )}
+        getUserChats().then(response => {
+            console.log(response);
+            res.send({response})
+        }).catch(err => {
+            console.log('GET USER CHATS WONT FIRE!!!', err)
+        })
     })
 })
 
